@@ -1,11 +1,29 @@
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget
+from PyQt5 import QtWidgets, Qt
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
 
 import sys
 import os
 
 from task_5 import Iterator
 from task_1 import create_annotaion
+
+class ScrollLabel(QScrollArea):
+ 
+    # constructor
+    def __init__(self, *args, **kwargs):
+        QScrollArea.__init__(self, *args, **kwargs)
+        self.setWidgetResizable(True)
+        text = QWidget(self)
+        self.setWidget(text)
+        lay = QVBoxLayout(text)
+        self.label = QLabel(text)
+        self.label.setWordWrap(True)
+        lay.addWidget(self.label)
+
+    def setText(self, text):
+        self.label.setText(text)
 
 class Window(QWidget):
     def __init__(self):
@@ -33,6 +51,13 @@ class Window(QWidget):
         self.good_button.adjustSize()
         self.good_button.clicked.connect(self.get_next_good)
 
+        
+        self.good_review = ScrollLabel(self)
+        self.good_review.setFixedSize(1550, 300)
+
+        self.bad_review = ScrollLabel(self)
+        self.bad_review.setFixedSize(1550, 300)
+
         self.bad_button = QtWidgets.QPushButton(self)
         self.bad_button.move(940, 0)
         self.bad_button.setText("Show next bad review")
@@ -47,7 +72,9 @@ class Window(QWidget):
         grid.addWidget(self.create_ann_btn, 1, 0)    
         grid.addWidget(self.ann_success_label, 1, 1)
         grid.addWidget(self.good_button, 2, 0)
+        grid.addWidget(self.good_review, 2, 1)
         grid.addWidget(self.bad_button, 3, 0)
+        grid.addWidget(self.bad_review, 3, 1)
         self.setLayout(grid)
         
         self.setWindowTitle("3rd lab")
@@ -61,20 +88,48 @@ class Window(QWidget):
         self.bad_iterator = Iterator(self.dataset_path, "bad")
         
     def create_annotation_for_btn(self):
-        if create_annotaion("ann1.csv", self.dataset_path) == True:
-            self.ann_success_label.setText("Success")
-        else:
-            self.ann_success_label.setText("Error")
+        try:
+            if create_annotaion("ann1.csv", self.dataset_path) == True:
+                self.ann_success_label.setText("Success")
+            else:
+                self.ann_success_label.setText("Error")
+        except AttributeError:
+            self.error_window("You should choose directory first!", "Error")
       
     def get_next_good(self):
-        with open(next(self.good_iterator), "r", encoding="utf-8") as file:
-            self.good_review.setText(" ".join(file.readlines()))
-            self.good_review.adjustSize()
+        try:
+            with open(next(self.good_iterator), "r", encoding="utf-8") as file:
+                self.good_review.setText(" ".join(file.readlines()))
+        except AttributeError:
+            self.error_window("You should choose directory first!", "Error")
 
     def get_next_bad(self):
-        with open(next(self.bad_iterator), "r", encoding="utf-8") as file:
-            self.bad_review.setText(" ".join(file.readlines()))
-            self.bad_review.adjustSize()
+        try:
+            with open(next(self.bad_iterator), "r", encoding="utf-8") as file:
+                self.bad_review.setText(" ".join(file.readlines()))
+        except AttributeError:
+            self.error_window("You should choose directory first!", "Error")
+
+    def error_window(self, text, title):
+        dialog=QDialog()
+
+        label = QLabel(dialog)
+        label.setText(text)
+        label.adjustSize()
+
+        btn = QPushButton(dialog)
+        btn.setText("Ok")
+        btn.move(50,50)
+        btn.clicked.connect(lambda: dialog.hide())
+
+        lay = QVBoxLayout()
+        lay.addWidget(label)
+        lay.addWidget(btn)
+        dialog.setLayout(lay)
+
+        dialog.setFixedSize(400, 200)
+        dialog.setWindowTitle(title)
+        dialog.exec_()
 
 
 def application():
