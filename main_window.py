@@ -31,12 +31,16 @@ class Window(QWidget):
     def __init__(self):
         super(QWidget, self).__init__()
         self.initUI()
+        self.setStyleSheet(
+            "background:rgb(255,239,213); color: rgb(48, 48, 48); font-weight:bold; border-radius: 5px;")
+
 
     def initUI(self):
         self.choose_dir_button = QtWidgets.QPushButton(self)
         self.choose_dir_button.setText("Select dataset folder")
         self.choose_dir_button.adjustSize()
         self.choose_dir_button.clicked.connect(self.choose_dir)
+        self.choose_dir_button.setStyleSheet("background:rgb(255,218,185); border: 5px solid rgb(255,218,185)")
 
         self.dir_label = QtWidgets.QLabel(self)
         self.dir_label.setText("")
@@ -46,6 +50,7 @@ class Window(QWidget):
         self.create_ann_btn.setText("Create annotation for your dataset")
         self.create_ann_btn.adjustSize()
         self.create_ann_btn.clicked.connect(self.create_annotation)
+        self.create_ann_btn.setStyleSheet("background:rgb(255,218,185);  border: 5px solid rgb(255,218,185)")
 
         self.ann_success_label = QtWidgets.QLabel(self)
 
@@ -53,23 +58,31 @@ class Window(QWidget):
         self.good_button.setText("Show next good review")
         self.good_button.adjustSize()
         self.good_button.clicked.connect(self.get_next_good)
+        self.good_button.setStyleSheet("background:rgb(255,218,185);  border: 5px solid rgb(255,218,185)")
 
         self.review_label = ScrollLabel(self)
+        self.review_label.setStyleSheet("background:rgb(255,228,181);  border: 5px solid rgb(255,218,185)")
 
         self.bad_button = QtWidgets.QPushButton(self)
         self.bad_button.setText("Show next bad review")
         self.bad_button.adjustSize()
         self.bad_button.clicked.connect(self.get_next_bad)
+        self.bad_button.setStyleSheet("background:rgb(255,218,185);  border: 5px solid rgb(255,218,185)")
+
 
         self.copy_dataset_btn = QtWidgets.QPushButton(self)
         self.copy_dataset_btn.setText("Create dataset with different struct")
         self.copy_dataset_btn.adjustSize()
         self.copy_dataset_btn.clicked.connect(self.copy_dataset)
+        self.copy_dataset_btn.setStyleSheet("background:rgb(255,218,185);  border: 5px solid rgb(255,218,185)")
+
 
         self.random_dataset_btn = QtWidgets.QPushButton(self)
         self.random_dataset_btn.setText("Create dataset with random instances")
         self.random_dataset_btn.adjustSize()
         self.random_dataset_btn.clicked.connect(self.create_rand_dataset)
+        self.random_dataset_btn.setStyleSheet("background:rgb(255,218,185);  border: 5px solid rgb(255,218,185)")
+
 
         grid = QGridLayout()
         grid.setSpacing(7)
@@ -79,7 +92,7 @@ class Window(QWidget):
         grid.addWidget(self.ann_success_label, 2, 1)
         grid.addWidget(self.good_button, 3, 0)
         grid.addWidget(self.bad_button, 5, 0)
-        grid.addWidget(self.review_label, 3, 3, 3, 1)
+        grid.addWidget(self.review_label, 3, 1, 3, 1)
         grid.addWidget(self.copy_dataset_btn, 6, 0)
         grid.addWidget(self.random_dataset_btn, 7, 0)
         self.setLayout(grid)
@@ -140,8 +153,10 @@ class Window(QWidget):
 
         btn = QPushButton(dialog)
         btn.setText("Ok")
+        btn.adjustSize()
         btn.move(50, 50)
         btn.clicked.connect(lambda: dialog.hide())
+        btn.setStyleSheet("background:rgb(255,218,185);  border: 5px solid rgb(255,218,185)")
 
         lay = QVBoxLayout()
         lay.addWidget(label)
@@ -150,6 +165,7 @@ class Window(QWidget):
 
         dialog.setFixedSize(400, 200)
         dialog.setWindowTitle(title)
+        dialog.setStyleSheet("background:rgb(255,239,213); color: rgb(48, 48, 48); font-weight:bold; border-radius: 5px;")
         dialog.exec_()
 
     def create_rand_dataset(self):
