@@ -1,10 +1,7 @@
-from PyQt5 import QtWidgets
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-
 import sys
 import os
+
+from PyQt5 import QtWidgets
 
 from task_5 import Iterator
 import task_1
@@ -12,14 +9,14 @@ import task_2
 import task_3
 
 
-class ScrollLabel(QScrollArea):
-    def __init__(self, *args, **kwargs):
-        QScrollArea.__init__(self, *args, **kwargs)
+class ScrollLabel(QtWidgets.QScrollArea):
+    def __init__(self, *args, **kwargs) -> None:
+        QtWidgets.QScrollArea.__init__(self, *args, **kwargs)
         self.setWidgetResizable(True)
-        text = QWidget(self)
+        text = QtWidgets.QWidget(self)
         self.setWidget(text)
-        lay = QVBoxLayout(text)
-        self.label = QLabel(text)
+        lay = QtWidgets.QVBoxLayout(text)
+        self.label = QtWidgets.QLabel(text)
         self.label.setWordWrap(True)
         lay.addWidget(self.label)
 
@@ -27,15 +24,15 @@ class ScrollLabel(QScrollArea):
         self.label.setText(text)
 
 
-class Window(QWidget):
-    def __init__(self):
-        super(QWidget, self).__init__()
+class Window(QtWidgets.QWidget):
+    def __init__(self) -> None:
+        super(QtWidgets.QWidget, self).__init__()
         self.initUI()
         self.setStyleSheet(
             "background:rgb(255,239,213); color: rgb(48, 48, 48); font-weight:bold; border-radius: 5px;")
 
 
-    def initUI(self):
+    def initUI(self) -> None:
         self.choose_dir_button = QtWidgets.QPushButton(self)
         self.choose_dir_button.setText("Select dataset folder")
         self.choose_dir_button.adjustSize()
@@ -69,13 +66,11 @@ class Window(QWidget):
         self.bad_button.clicked.connect(self.get_next_bad)
         self.bad_button.setStyleSheet("background:rgb(255,218,185);  border: 5px solid rgb(255,218,185)")
 
-
         self.copy_dataset_btn = QtWidgets.QPushButton(self)
         self.copy_dataset_btn.setText("Create dataset with different struct")
         self.copy_dataset_btn.adjustSize()
         self.copy_dataset_btn.clicked.connect(self.copy_dataset)
         self.copy_dataset_btn.setStyleSheet("background:rgb(255,218,185);  border: 5px solid rgb(255,218,185)")
-
 
         self.random_dataset_btn = QtWidgets.QPushButton(self)
         self.random_dataset_btn.setText("Create dataset with random instances")
@@ -83,8 +78,7 @@ class Window(QWidget):
         self.random_dataset_btn.clicked.connect(self.create_rand_dataset)
         self.random_dataset_btn.setStyleSheet("background:rgb(255,218,185);  border: 5px solid rgb(255,218,185)")
 
-
-        grid = QGridLayout()
+        grid = QtWidgets.QGridLayout()
         grid.setSpacing(7)
         grid.addWidget(self.choose_dir_button, 1, 0)
         grid.addWidget(self.dir_label, 1, 1)
@@ -100,7 +94,8 @@ class Window(QWidget):
         self.setWindowTitle("3rd lab")
         self.setGeometry(0, 0, 1900, 950)
 
-    def choose_dir(self):
+
+    def choose_dir(self) -> None:
         self.dataset_path = os.path.abspath(
             QtWidgets.QFileDialog.getExistingDirectory(self, "Select dataset folder")
         )
@@ -109,7 +104,8 @@ class Window(QWidget):
         self.good_iterator = Iterator(self.dataset_path, "good")
         self.bad_iterator = Iterator(self.dataset_path, "bad")
 
-    def create_annotation(self):
+
+    def create_annotation(self) -> None:
         try:
             if task_1.create_annotaion("ann1.csv", self.dataset_path) == True:
                 self.ann_success_label.setText("Success")
@@ -118,21 +114,30 @@ class Window(QWidget):
         except AttributeError:
             self.error_window("You should choose directory first!", "Error")
 
-    def get_next_good(self):
+
+    def get_next_good(self) -> None:
         try:
             with open(next(self.good_iterator), "r", encoding="utf-8") as file:
                 self.review_label.setText(" ".join(file.readlines()))
         except AttributeError:
             self.error_window("You should choose directory first!", "Error")
+        except IndexError:
+            self.review_label.setText("Комментарии закончились")
+            self.good_iterator =  Iterator(self.dataset_path, "good")
 
-    def get_next_bad(self):
+
+    def get_next_bad(self) -> None:
         try:
             with open(next(self.bad_iterator), "r", encoding="utf-8") as file:
                 self.review_label.setText(" ".join(file.readlines()))
         except AttributeError:
             self.error_window("You should choose directory first!", "Error")
+        except IndexError:
+            self.review_label.setText("Комментарии закончились")
+            self.bad_iterator =  Iterator(self.dataset_path, "bad")
 
-    def copy_dataset(self):
+
+    def copy_dataset(self) -> None:
         try:
             self.copy_dir = os.path.abspath(
                 QtWidgets.QFileDialog.getExistingDirectory(
@@ -144,21 +149,22 @@ class Window(QWidget):
         except AttributeError:
             self.error_window("You should choose directory first!", "Error")
 
-    def error_window(self, text, title):
-        dialog = QDialog()
 
-        label = QLabel(dialog)
+    def error_window(self, text, title)->None:
+        dialog = QtWidgets.QDialog()
+
+        label = QtWidgets.QLabel(dialog)
         label.setText(text)
         label.adjustSize()
 
-        btn = QPushButton(dialog)
+        btn = QtWidgets.QPushButton(dialog)
         btn.setText("Ok")
         btn.adjustSize()
         btn.move(50, 50)
         btn.clicked.connect(lambda: dialog.hide())
         btn.setStyleSheet("background:rgb(255,218,185);  border: 5px solid rgb(255,218,185)")
 
-        lay = QVBoxLayout()
+        lay = QtWidgets.QVBoxLayout()
         lay.addWidget(label)
         lay.addWidget(btn)
         dialog.setLayout(lay)
@@ -168,7 +174,8 @@ class Window(QWidget):
         dialog.setStyleSheet("background:rgb(255,239,213); color: rgb(48, 48, 48); font-weight:bold; border-radius: 5px;")
         dialog.exec_()
 
-    def create_rand_dataset(self):
+
+    def create_rand_dataset(self) -> None:
         try:
             self.copy_rand_dir = os.path.abspath(
                 QtWidgets.QFileDialog.getExistingDirectory(
@@ -180,8 +187,8 @@ class Window(QWidget):
             self.error_window("You should choose directory first!", "Error")
 
 
-def application():
-    app = QApplication(sys.argv)
+def application() -> None:
+    app = QtWidgets.QApplication(sys.argv)
 
     window = Window()
 
