@@ -150,7 +150,7 @@ class Window(QtWidgets.QWidget):
             self.error_window("You should choose directory first!", "Error")
 
 
-    def error_window(self, text, title) -> None:
+    def error_window(self, text: str, title: str) -> None:
         dialog = QtWidgets.QDialog()
 
         label = QtWidgets.QLabel(dialog)
