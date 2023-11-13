@@ -20,7 +20,7 @@ class ScrollLabel(QtWidgets.QScrollArea):
         self.label.setWordWrap(True)
         lay.addWidget(self.label)
 
-    def setText(self, text):
+    def setText(self, text: str) -> None:
         self.label.setText(text)
 
 
@@ -30,7 +30,7 @@ class Window(QtWidgets.QWidget):
         self.initUI()
         self.setStyleSheet(
             "background:rgb(255,239,213); color: rgb(48, 48, 48); font-weight:bold; border-radius: 5px;")
-
+ 
 
     def initUI(self) -> None:
         self.choose_dir_button = QtWidgets.QPushButton(self)
@@ -150,7 +150,7 @@ class Window(QtWidgets.QWidget):
             self.error_window("You should choose directory first!", "Error")
 
 
-    def error_window(self, text, title)->None:
+    def error_window(self, text, title) -> None:
         dialog = QtWidgets.QDialog()
 
         label = QtWidgets.QLabel(dialog)
